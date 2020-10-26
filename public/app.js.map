@@ -1,0 +1,1 @@
+{"version":3,"sources":["../src/app.js"],"names":["HelloWorld"],"mappings":";;;;;;;;IAAMA,U;;;;;;;4BACI;AACN,aAAO,cAAP;AACD","sourcesContent":["class HelloWorld {\r\n  greet() {\r\n    return 'Hello world!';\r\n  }\r\n}"],"file":"app.js"}
