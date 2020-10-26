@@ -1,23 +1,45 @@
 "use strict";
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+document.querySelector("#submit").addEventListener("click", function (e) {
+  e.preventDefault();
+  calculate();
+});
+document.querySelectorAll(".reduce").forEach(function (button) {
+  button.addEventListener("click", function (e) {
+    e.preventDefault();
+    var inputId = e.currentTarget.getAttribute("data-target");
+    var input = document.querySelector("#".concat(inputId));
 
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-var HelloWorld = /*#__PURE__*/function () {
-  function HelloWorld() {
-    _classCallCheck(this, HelloWorld);
-  }
-
-  _createClass(HelloWorld, [{
-    key: "greet",
-    value: function greet() {
-      return 'Hello world!';
+    if (parseFloat(input.value) - 1 >= parseFloat(input.getAttribute("min"))) {
+      input.value = parseFloat(input.value) - 1;
     }
-  }]);
+  });
+});
+document.querySelectorAll(".increase").forEach(function (button) {
+  button.addEventListener("click", function (e) {
+    e.preventDefault();
+    var inputId = e.currentTarget.getAttribute("data-target");
+    var input = document.querySelector("#".concat(inputId));
 
-  return HelloWorld;
-}();
+    if (parseFloat(input.value) + 1 <= parseFloat(input.getAttribute("max"))) {
+      input.value = parseFloat(input.value) + 1;
+    }
+  });
+});
+
+var calculate = function calculate() {
+  var bill = document.getElementById("bill").value,
+      people = document.getElementById("people").value;
+  var resultBox = document.getElementsByClassName("result--card")[0],
+      validationNotice = document.getElementsByClassName("validation--notice")[0];
+
+  if (bill === "" || people === "" || people == 0) {
+    resultBox.classList.add("hidden");
+    validationNotice.classList.remove("hidden");
+  } else {
+    validationNotice.classList.add("hidden");
+    document.getElementById("amount").innerText = (parseFloat(bill) / parseFloat(people)).toFixed(2);
+    resultBox.classList.remove("hidden");
+  }
+};
 //# sourceMappingURL=app.js.map
