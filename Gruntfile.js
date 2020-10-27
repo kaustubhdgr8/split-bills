@@ -1,32 +1,38 @@
 module.exports = function (grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON("package.json"),
-    "babel": {
+    concat: {
+      js: {
+        src: ['src/scripts/*.js', '!src/scripts/app.js'],
+        dest: 'src/scripts/app.js'
+      }
+    },
+    babel: {
       options: {
         sourceMap: true
       },
       dist: {
         files: {
-          "public/app.js": "src/**.js"
+          "public/app.js": "src/scripts/app.js"
         }
       }
     },
-    "copy": {
+    copy: {
       files: {
         expand: true,
         flatten: true,
         cwd: "src",
-        src: ["**/*", "!*.js"],
+        src: ["**/*", "!**/*.js"],
         dest: "public/"
       }
     },
-    "jshint": {
+    jshint: {
       all: ['Gruntfile.js', 'src/**/*.js'],
       options: {
         'esversion': 6
       }
     },
-    "watch": {
+    watch: {
       gruntfile: {
         files: "Gruntfile.js",
         tasks: ["jshint"]
@@ -39,10 +45,11 @@ module.exports = function (grunt) {
   });
 
   grunt.loadNpmTasks("grunt-babel");
+  grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks("grunt-contrib-copy");
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
 
   grunt.registerTask("default", ["compile", "watch"]);
-  grunt.registerTask("compile", ["jshint", "babel", "copy"]);
+  grunt.registerTask("compile", ["jshint", "concat", "babel", "copy"]);
 };
