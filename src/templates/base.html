@@ -25,47 +25,7 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <nav
-      class="navbar sticky-top navbar-expand-lg navbar-light bg-light custom__navbar"
-    >
-      <div class="container">
-        <a class="navbar-brand" href="/">
-          <img
-            src="assets/images/bill-splitter.png"
-            alt="Bill splitter"
-            loading="lazy"
-          />
-        </a>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-toggle="collapse"
-          data-target="#navbarNav"
-          aria-controls="navbarNav"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav mr-auto">
-            <li class="nav-item active custom__navbar--item">
-              <a class="nav-link" href="/">Home</a>
-            </li>
-            <li class="nav-item custom__navbar--item">
-              <a class="nav-link" href="/users.html">Friends</a>
-            </li>
-            <li class="nav-item custom__navbar--item">
-              <a class="nav-link" href="/groups.html">Groups</a>
-            </li>
-          </ul>
-          <div class="my-2 my-lg-0">
-            <button class="btn btn-outline-dark my-2 my-sm-0">Login</button>
-          </div>
-        </div>
-      </div>
-    </nav>
-
+    <!--(bake partials/navbar.html)-->
 
     <main class="container pt-5 pb-5">
       <h1 class="display-2">Split your bills easily</h1>
@@ -208,51 +168,7 @@
       </div>
     </main>
 
-    <footer class="custom__footer pt-4">
-      <div class="container">
-        <p>This site is developed with JavaScript, HTML & CSS.</p>
-        <p class="custom__footer--links">
-          <span>
-            <strong>&#169; IP of Kaustubh Ghodke</strong>
-          </span>
-          <span>
-            <a
-              href="https://github.com/kaustubhdgr8"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="ml-4"
-            >
-              <img src="assets/icons/github.png" alt="GitHub" title="GitHub" />
-            </a>
-            <a
-              href="https://www.facebook.com/kaustubhdgr8"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="ml-4"
-            >
-              <img
-                src="assets/icons/facebook.png"
-                alt="Facebook"
-                title="Facebook"
-              />
-            </a>
-            <a
-              href="https://www.linkedin.com/in/kaustubhghodke"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="ml-4"
-            >
-              <img
-                src="assets/icons/linkedin.png"
-                alt="LinkedIn"
-                title="LinkedIn"
-              />
-            </a>
-          </span>
-        </p>
-      </div>
-    </footer>
-
+    <!--(bake partials/footer.html)-->
 
     <!-- Firebase scripts -->
     <script src="/__/firebase/7.24.0/firebase-app.js"></script>
