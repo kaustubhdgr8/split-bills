@@ -14,7 +14,8 @@ module.exports = function (grunt) {
     bake: {
       html: {
         files: {
-          "src/templates/index.html": "src/templates/base.html",
+          "src/templates/final/index.html": "src/templates/base-index.html",
+          "src/templates/final/users.html": "src/templates/base-user.html",
         },
       },
     },
@@ -28,7 +29,7 @@ module.exports = function (grunt) {
       html: {
         expand: true,
         flatten: true,
-        src: ["src/templates/index.html", "src/templates/404.html"],
+        src: ["src/templates/final/*.html"],
         dest: "public/",
       },
       css: {
@@ -56,7 +57,11 @@ module.exports = function (grunt) {
         tasks: ["jshint"],
       },
       src: {
-        files: ["src/**/*", "!src/templates/index.html", "!src/scripts/app.js"],
+        files: [
+          "src/**/*",
+          "!src/templates/final/*.html",
+          "!src/scripts/app.js",
+        ],
         tasks: ["compile"],
       },
     },
