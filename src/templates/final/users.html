@@ -67,11 +67,11 @@
       </div>
     </nav>
 
-    <main class="container pt-5 pb-5">
+    <main class="container pt-md-5 pb-5">
       <h1 class="display-4">My friends</h1>
       <hr class="mb-5" />
       <div class="row">
-        <section class="col-md-6">
+        <section class="col-md-6 mb-4">
           <ul class="list-group" id="users">
             <div class="d-flex justify-content-center">
               <div class="spinner-border" role="status">
@@ -79,7 +79,7 @@
               </div>
             </div>
           </ul>
-          <div class="mt-4">
+          <div class="mt-4 custom__cta-group">
             <button type="button" class="btn btn-primary mr-2">
               + Add an expense
             </button>
@@ -101,7 +101,10 @@
                     <li class="list-group-item">Walmart shopping</li>
                   </ul>
                 </div>
-                <div class="card-body">
+              </div>
+              <div class="col-xl-4"></div>
+              <div class="col-xl-8">
+                <div class="card-body custom__cta-group--details">
                   <a href="#" class="btn btn-primary mr-2">Settle</a>
                   <a href="#" class="btn btn-outline-primary mr-2"
                     >Edit profile</a
@@ -116,7 +119,6 @@
     </main>
     <footer class="custom__footer pt-4">
       <div class="container">
-        <p>This site is developed with JavaScript, HTML, CSS and Firebase DB.</p>
         <p class="custom__footer--links">
           <span>
             <strong>&#169; IP of Kaustubh Ghodke</strong>
@@ -156,7 +158,13 @@
             </a>
           </span>
         </p>
-        <br /><br />
+        <p>
+          <small
+            >This site is developed with JavaScript, HTML, CSS, Bootstrap, Grunt and
+            Firebase DB.</small
+          >
+        </p>
+        <br />
         <p>
           <small class="text-muted">
             <a
