@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Bill splitter | Split your bills easily</title>
     <link rel="icon" type="image/png" href="assets/images/favicon.png" />
     <link
       rel="stylesheet"
@@ -22,8 +21,15 @@
       integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
       crossorigin="anonymous"
     ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.2.0/purify.min.js"
+      integrity="sha512-pCLEWaRgW+fJYJXoFb6sm5LHmXMW8sp6dFmdN/MjRO54Qc3vcPEjRfvMqgwOAzn+do/JDR75vgpWerWVrDvdRQ=="
+      crossorigin="anonymous"
+    ></script>
     <link rel="stylesheet" href="styles.css" />
   </head>
+
+  <title>Bill splitter | Split your bills easily</title>
   <body>
     <nav
       class="navbar sticky-top navbar-expand-lg navbar-light bg-light custom__navbar"
@@ -49,7 +55,7 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav mr-auto">
-            <li class="nav-item active custom__navbar--item">
+            <li class="nav-item custom__navbar--item">
               <a class="nav-link" href="/">Home</a>
             </li>
             <li class="nav-item custom__navbar--item">
@@ -66,12 +72,11 @@
       </div>
     </nav>
 
-
-    <main class="container pt-5 pb-5">
+    <main class="container pt-md-5 pb-5">
       <h1 class="display-2">Split your bills easily</h1>
       <hr class="mb-5" />
       <div class="row">
-        <section class="col-6 form">
+        <section class="col-md-6 form">
           <form method="POST">
             <div
               class="alert alert-danger validation--notice hidden"
@@ -197,7 +202,7 @@
             </button>
           </form>
         </section>
-        <section class="col-6 result">
+        <section class="col-md-6 result">
           <div class="card result--card hidden">
             <div class="card-body">
               <h5 class="card-title">Your split is:</h5>
@@ -207,10 +212,8 @@
         </section>
       </div>
     </main>
-
     <footer class="custom__footer pt-4">
       <div class="container">
-        <p>This site is developed with JavaScript, HTML & CSS.</p>
         <p class="custom__footer--links">
           <span>
             <strong>&#169; IP of Kaustubh Ghodke</strong>
@@ -220,7 +223,7 @@
               href="https://github.com/kaustubhdgr8"
               target="_blank"
               rel="noopener noreferrer"
-              class="ml-4"
+              class="ml-md-4"
             >
               <img src="assets/icons/github.png" alt="GitHub" title="GitHub" />
             </a>
@@ -250,9 +253,26 @@
             </a>
           </span>
         </p>
+        <p>
+          <small
+            >This site is developed with JavaScript, HTML, CSS, Bootstrap, Grunt and
+            Firebase DB.</small
+          >
+        </p>
+        <br />
+        <p>
+          <small class="text-muted">
+            <a
+              href="https://www.freepik.com/vectors/business"
+              target="_blank"
+              rel="noopener noreferrer"
+              style="color: black"
+              >Business vector created by macrovector - www.freepik.com</a
+            >
+          </small>
+        </p>
       </div>
     </footer>
-
 
     <!-- Firebase scripts -->
     <script src="/__/firebase/7.24.0/firebase-app.js"></script>
@@ -260,5 +280,6 @@
     <script src="/__/firebase/init.js"></script>
 
     <script src="app.js"></script>
+
   </body>
 </html>
