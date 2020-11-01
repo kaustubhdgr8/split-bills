@@ -54,6 +54,22 @@
   }
 }
 
+/* groups */
+.custom__group-list--image {
+  height: 4vh;
+}
+.custom__group-user-list--image {
+  height: 3vh;
+}
+.custom__group-category--image {
+  height: 3vh;
+}
+@media only screen and (min-width: 767px) {
+  .custom__group-category--image {
+    height: 2vh;
+  }
+}
+
 .hidden {
   display: none;
 }

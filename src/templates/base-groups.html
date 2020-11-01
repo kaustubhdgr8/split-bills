@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
   <!--(bake partials/head.html)-->
-  <title>Bill splitter | My friends</title>
+  <title>Bill splitter | Groups</title>
   <body>
     <!--(bake partials/navbar.html)-->
     <!--(bake partials/modals.html)-->
     <main class="container pt-md-5 pb-5">
-      <h1 class="display-4">My friends</h1>
+      <h1 class="display-4">Groups</h1>
       <hr class="mb-5" />
       <div class="row">
         <section class="col-md-6 mb-4">
-          <ul class="list-group" id="users">
+          <ul class="list-group" id="groups">
             <div class="mb-5" style="text-align: center">
               <div class="spinner-border" role="status"></div>
               <div>Loading ...</div>
@@ -30,35 +30,24 @@
               type="button"
               class="btn btn-outline-primary"
               data-toggle="modal"
-              data-target="#form--user"
-              onclick="addUser()"
+              data-target="#form--group"
+              onclick="addGroup()"
             >
-              + Add a friend
+              + Add new group
             </button>
           </div>
         </section>
         <section class="col-md-6 container__action">
-          <div class="card hidden" id="user-details__container">
-            <div class="row no-gutters">
-              <div class="col-md-4" id="user-details__image"></div>
-              <div class="col-md-8">
-                <div class="card-body" id="user-details"></div>
-                <div class="card-body">
-                  <h5 class="h5">Groups</h5>
-                  <ul
-                    class="list-group list-group-flush"
-                    id="user-details__groups"
-                  ></ul>
-                </div>
-              </div>
-              <div class="col-xl-4"></div>
-              <div class="col-xl-8">
-                <div
-                  class="card-body custom__cta-group--details"
-                  id="user-details__cta"
-                ></div>
-              </div>
+          <div class="card hidden" id="group-details__container">
+            <div class="card-body" id="group-header"></div>
+            <div class="card-body">
+              <div id="group-details--tabs"></div>
+              <div id="group-details"></div>
             </div>
+            <div
+              class="card-body custom__cta-group--details"
+              id="group-details__cta"
+            ></div>
           </div>
         </section>
       </div>
