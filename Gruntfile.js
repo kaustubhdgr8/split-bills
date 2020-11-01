@@ -16,6 +16,7 @@ module.exports = function (grunt) {
         files: {
           "src/templates/final/index.html": "src/templates/base-index.html",
           "src/templates/final/users.html": "src/templates/base-user.html",
+          "src/templates/final/groups.html": "src/templates/base-groups.html",
         },
       },
     },
