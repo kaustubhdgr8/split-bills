@@ -78,6 +78,8 @@ function _renderView(index = null) {
         .getElementById("group-details__container")
         .classList.add("hidden");
     }
+  } else {
+    _renderDashboard();
   }
 }
 function _renderUsers() {
@@ -111,6 +113,7 @@ function _renderUsers() {
       "users"
     ).innerHTML = `<div class="alert alert-warning" role="alert">No friends yet! Add friends now and split your bills easily.</div>`;
   }
+  _renderDuesAlert();
 }
 function _renderGroups() {
   if (groups.length != 0) {
@@ -140,6 +143,54 @@ function _renderGroups() {
       "groups"
     ).innerHTML = `<div class="alert alert-warning" role="alert">No groups found! Add a group now and record your expenses.</div>`;
   }
+  _renderDuesAlert();
+}
+function _renderDashboard() {
+  const title = document.getElementById("dashboard__title");
+  const usersContainer = document.getElementById("dashboard__list--users");
+  const groupsContainer = document.getElementById("dashboard__list--groups");
+  const amount = _calculateTotal();
+
+  let usersList = `<ul class="list-group list-group-flush">`;
+  let groupsList = `<ul class="list-group list-group-flush">`;
+
+  if (amount < 0) {
+    title.innerHTML = `You owe your friend(s) <span class="display-4">$${Math.abs(
+      amount.toFixed(2)
+    )}!</span>`;
+    title.classList.add("text-danger");
+  } else if (amount > 0) {
+    title.innerHTML = `Your friend(s) owe you <span class="display-4">$${amount.toFixed(
+      2
+    )}!</span>`;
+    title.classList.add("text-success");
+  } else {
+    title.innerHTML = "Everything is settled up!";
+  }
+
+  for (let [index, user] of Object.entries(users)) {
+    if (!user.settled) {
+      usersList += `
+        <li class="list-group-item d-flex justify-content-between">
+          <span>${user.name}</span>
+          <span class="${
+            user.amount < 0 ? "text-danger" : "text-success"
+          }">$${Math.abs(user.amount.toFixed(2))}</span>
+        </li>
+      `;
+    }
+  }
+  usersList += "<ul>";
+
+  for (let [index, group] of Object.entries(groups)) {
+    if (!group.settled) {
+      groupsList += `<li class="list-group-item"><a href="/groups.html">${group.name}</a></li>`;
+    }
+  }
+  groupsList += "<ul>";
+
+  usersContainer.innerHTML = usersList;
+  groupsContainer.innerHTML = groupsList;
 }
 function _randomNumber(gender) {
   const n = Math.floor(Math.random() * (16 - 1 + 1) + 1);
@@ -166,6 +217,36 @@ function _totalExpense(groupIndex) {
     }
   }
   return total;
+}
+function _calculateTotal() {
+  let amount = 0;
+  if (users.length !== 0) {
+    for (let [index, user] of Object.entries(users)) {
+      if (!user.settled) {
+        amount += user.amount;
+      }
+    }
+  }
+  return amount;
+}
+function _renderDuesAlert() {
+  const container = document.getElementById("totalDuesAlert");
+  const amount = _calculateTotal();
+
+  if (amount < 0) {
+    container.innerHTML = `You have to pay <span class="h5">$${Math.abs(
+      amount.toFixed(2)
+    )}</span>. This amount is the total of all the dues for all the pending (non-settled) groups.`;
+    container.classList.add("alert-danger");
+  } else if (amount > 0) {
+    container.innerHTML = `You are owed <span class="h5">$${amount.toFixed(
+      2
+    )}</span>. This amount is the total of all the dues for all the pending (non-settled) groups.`;
+    container.classList.add("alert-success");
+  } else {
+    container.innerHTML = "Everything is settled up!";
+    container.classList.add("alert-secondary");
+  }
 }
 
 /**
