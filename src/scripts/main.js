@@ -78,6 +78,8 @@ function _renderView(index = null) {
         .getElementById("group-details__container")
         .classList.add("hidden");
     }
+  } else {
+    _renderDashboard();
   }
 }
 function _renderUsers() {
@@ -111,6 +113,7 @@ function _renderUsers() {
       "users"
     ).innerHTML = `<div class="alert alert-warning" role="alert">No friends yet! Add friends now and split your bills easily.</div>`;
   }
+  _renderDuesAlert();
 }
 function _renderGroups() {
   if (groups.length != 0) {
@@ -140,6 +143,54 @@ function _renderGroups() {
       "groups"
     ).innerHTML = `<div class="alert alert-warning" role="alert">No groups found! Add a group now and record your expenses.</div>`;
   }
+  _renderDuesAlert();
+}
+function _renderDashboard() {
+  const title = document.getElementById("dashboard__title");
+  const usersContainer = document.getElementById("dashboard__list--users");
+  const groupsContainer = document.getElementById("dashboard__list--groups");
+  const amount = _calculateTotal();
+
+  let usersList = `<ul class="list-group list-group-flush">`;
+  let groupsList = `<ul class="list-group list-group-flush">`;
+
+  if (amount < 0) {
+    title.innerHTML = `You owe your friend(s) <span class="display-4">$${Math.abs(
+      amount.toFixed(2)
+    )}!</span>`;
+    title.classList.add("text-danger");
+  } else if (amount > 0) {
+    title.innerHTML = `Your friend(s) owe you <span class="display-4">$${amount.toFixed(
+      2
+    )}!</span>`;
+    title.classList.add("text-success");
+  } else {
+    title.innerHTML = "Everything is settled up!";
+  }
+
+  for (let [index, user] of Object.entries(users)) {
+    if (!user.settled) {
+      usersList += `
+        <li class="list-group-item d-flex justify-content-between">
+          <span>${user.name}</span>
+          <span class="${
+            user.amount < 0 ? "text-danger" : "text-success"
+          }">$${Math.abs(user.amount.toFixed(2))}</span>
+        </li>
+      `;
+    }
+  }
+  usersList += "<ul>";
+
+  for (let [index, group] of Object.entries(groups)) {
+    if (!group.settled) {
+      groupsList += `<li class="list-group-item"><a href="/groups.html">${group.name}</a></li>`;
+    }
+  }
+  groupsList += "<ul>";
+
+  usersContainer.innerHTML = usersList;
+  groupsContainer.innerHTML = groupsList;
 }
 function _randomNumber(gender) {
   const n = Math.floor(Math.random() * (16 - 1 + 1) + 1);
@@ -166,6 +217,36 @@ function _totalExpense(groupIndex) {
     }
   }
   return total;
+}
+function _calculateTotal() {
+  let amount = 0;
+  if (users.length !== 0) {
+    for (let [index, user] of Object.entries(users)) {
+      if (!user.settled) {
+        amount += user.amount;
+      }
+    }
+  }
+  return amount;
+}
+function _renderDuesAlert() {
+  const container = document.getElementById("totalDuesAlert");
+  const amount = _calculateTotal();
+
+  if (amount < 0) {
+    container.innerHTML = `You have to pay <span class="h5">$${Math.abs(
+      amount.toFixed(2)
+    )}</span>. This amount is the total of all the dues for all the pending (non-settled) groups.`;
+    container.classList.add("alert-danger");
+  } else if (amount > 0) {
+    container.innerHTML = `You are owed <span class="h5">$${amount.toFixed(
+      2
+    )}</span>. This amount is the total of all the dues for all the pending (non-settled) groups.`;
+    container.classList.add("alert-success");
+  } else {
+    container.innerHTML = "Everything is settled up!";
+    container.classList.add("alert-secondary");
+  }
 }
 
 /**
@@ -197,18 +278,18 @@ function renderUserDetails(userIndex) {
       <small class="text-muted">Last updated on ${user.date}</small>
     </p>`;
 
-  let groupUsers;
-  for (let [index, group] of Object.keys(groups)) {
-    groupUsers = group.users;
-    if (groupUsers) {
-      for (let [index, groupUser] of Object.keys(groupUsers)) {
-        if (index === userIndex) {
+  for (let [index, group] of Object.entries(groups)) {
+    if (group.users) {
+      for (let [gUserIndex, groupUser] of Object.entries(group.users)) {
+        if (gUserIndex === userIndex) {
           memberGroups += `<li class="list-group-item">
-              ${group.name}
+              <a href="/groups.html">
+                ${group.name}
+              </a>
               <small class="text-muted">(${
                 group.settled ? "settled up" : "pending"
               })</small>
-            </li>;`;
+            </li>`;
           break;
         }
       }
@@ -319,14 +400,14 @@ function renderGroupDetails(groupIndex) {
           </span>
         </a>
       </li>
-      <li class="nav-item">
+      <!-- <li class="nav-item">
         <a class="nav-link" href="#" id="tab--chart" onclick="activateTab(this, '${groupIndex}')">Chart</a>
-      </li>
+      </li> -->
     </ul>`;
   document.getElementById("group-details").innerHTML = "";
 
   let ctaButtons = "";
-  if (!group.settled) {
+  if (group.users) {
     ctaButtons += `<button class="btn btn-primary btn-sm mr-2" data-toggle="modal" data-target="#form--expense" onclick="addExpense('${groupIndex}')">Record expense</button>`;
   }
   document.getElementById("group-details__cta").innerHTML = `${ctaButtons}
@@ -394,7 +475,7 @@ function activateTab(el, groupIndex) {
   if (!el.classList.contains("active")) {
     document.getElementById("tab--friend").classList.remove("active");
     document.getElementById("tab--activity").classList.remove("active");
-    document.getElementById("tab--chart").classList.remove("active");
+    //document.getElementById("tab--chart").classList.remove("active");
     document.getElementById("group-details").innerHTML = "";
 
     el.classList.add("active");
@@ -405,7 +486,7 @@ function activateTab(el, groupIndex) {
     } else if (clickedTab === "tab--activity") {
       _renderGroupActivity(groupIndex);
     } else {
-      _renderGroupChart(groupIndex);
+      // _renderGroupChart(groupIndex);
     }
   }
 }
@@ -459,8 +540,18 @@ function _renderGroupActivity(groupIndex) {
     container.innerHTML = `<div class="alert alert-warning mt-3" role="alert">No bills added yet! Record your expenses now and split your bills easily.</div>`;
   } else {
     let content = `<ul class="list-group list-group-flush mt-2">`;
+    let paidByYou, debtAmount;
 
     for (let [index, activity] of Object.entries(activities)) {
+      paidByYou = activity.paidby === "0";
+      if (paidByYou) {
+        debtAmount =
+          parseFloat(activity.amount) -
+          parseFloat(activity.amount) / Object.keys(activity.split).length;
+      } else {
+        debtAmount =
+          parseFloat(activity.amount) / Object.keys(activity.split).length;
+      }
       content += `<li class="list-group-item">
           <div class="d-flex justify-content-between align-items-center mb-2"> 
             <div class="d-flex justify-content-start align-items-baseline">
@@ -475,20 +566,29 @@ function _renderGroupActivity(groupIndex) {
                 })</small>
               </span>
             </div>
-            <div class="h5" style="text-align: right;">$${activity.amount}</div>
+            <div class="h5 text-${
+              paidByYou ? "success" : "danger"
+            }" style="text-align: right;">
+              <small style="font-size: small;">${
+                paidByYou ? "you lent" : "you borrowed"
+              }</small>
+              $${debtAmount.toFixed(2)}
+            </div>
           </div>
           <div class="d-flex justify-content-between align-items-start">
             <span class="d-flex flex-column align-items-start">
               <span>Total: $${activity.amount}</span>
               <small class="text-muted">
                 (Paid by ${
-                  activity.paidby === "0" ? "You" : users[activity.paidby].name
+                  paidByYou ? "You" : users[activity.paidby].name
                 })</small>
             </span>
             <span class="d-flex flex-column align-items-end">`;
 
       for (let [userIndex, user] of Object.entries(activity.split)) {
-        content += `<small>${users[userIndex].name}</small>`;
+        if (userIndex !== "0") {
+          content += `<small>${users[userIndex].name}</small>`;
+        }
       }
 
       content += `</span>
@@ -680,10 +780,10 @@ document.getElementById("group-form").addEventListener("submit", (e) => {
       name: groupName,
       type: groupType,
       date: _todayDate(),
-      settled: false,
+      settled: true,
     };
     db.ref().update(newGroup);
-    fetchData();
+    fetchData(key);
   }
   $("#form--group").modal("toggle");
 });
@@ -696,6 +796,7 @@ document.getElementById("member-form").addEventListener("submit", (e) => {
   const userOptions = multiselect && multiselect.options;
   let selectedUsers = [];
   let groupMembers = {};
+  let userGroupObj;
 
   for (let i = 0; i < userOptions.length; i++) {
     if (userOptions[i].selected) {
@@ -703,15 +804,15 @@ document.getElementById("member-form").addEventListener("submit", (e) => {
     }
   }
   selectedUsers.forEach((user) => {
-    if (!groups[groupIndex].users[user]) {
+    userGroupObj = {};
+    if (!groups[groupIndex].users || !groups[groupIndex].users[user]) {
       groupMembers[user] = 0;
     }
-    // db.ref(`bill-splitter/users/${user}/groups`).update({
-    //   groupIndex: true,
-    // });
-    // db.ref(`bill-splitter/users/${user}`).update({
-    //   date: _todayDate(),
-    // });
+    userGroupObj[groupIndex] = true;
+    db.ref(`bill-splitter/users/${user}/groups`).update(userGroupObj);
+    db.ref(`bill-splitter/users/${user}`).update({
+      date: _todayDate(),
+    });
   });
 
   db.ref(`bill-splitter/groups/${groupIndex}/users`).update(groupMembers);
@@ -747,18 +848,19 @@ document.getElementById("expense-form").addEventListener("submit", (e) => {
   );
 
   let selectedUsers = {};
-  let userCheck = [];
+  let perPersonAmount;
 
   for (const checkbox of document.getElementsByName("expense-users")) {
     if (checkbox.checked) {
       selectedUsers[checkbox.value] = true;
-      userCheck.push(checkbox.value);
     }
   }
-  if (paidbyName != "0") {
-    selectedUsers[paidbyName] = 0;
-    userCheck.push(paidbyName);
+  selectedUsers[paidbyName] = true;
+  if (paidbyName !== "0") {
+    selectedUsers["0"] = true;
   }
+
+  perPersonAmount = parseFloat(amount) / Object.keys(selectedUsers).length;
 
   const key = db.ref().child("bill-splitter").push().key;
   let newActivity = {};
@@ -778,17 +880,38 @@ document.getElementById("expense-form").addEventListener("submit", (e) => {
     settled: false,
   });
 
-  // TODO update amounts
-  let nonExistantUsers = {};
-  userCheck.forEach((userIndex) => {
-    if (!groups[groupIndex].users[userIndex]) {
-      nonExistantUsers[userIndex] = 0;
+  let groupUsersUpdate = {};
+  let debt, updatedUserAmount, groupUserObj;
+
+  if (paidbyName === "0") {
+    for (let [userIndex, selectedUser] of Object.entries(selectedUsers)) {
+      if (userIndex !== "0") {
+        groupUserObj = groups[groupIndex].users[userIndex];
+        debt = groupUserObj ? groupUserObj + perPersonAmount : perPersonAmount;
+
+        groupUsersUpdate[userIndex] = debt;
+        updatedUserAmount = users[userIndex].amount + debt;
+
+        db.ref(`bill-splitter/users/${userIndex}`).update({
+          amount: updatedUserAmount,
+          settled: false,
+        });
+      }
     }
-  });
-  if (Object.keys(nonExistantUsers).length !== 0) {
-    db.ref(`bill-splitter/groups/${groupIndex}/users`).update(nonExistantUsers);
+  } else {
+    groupUserObj = groups[groupIndex].users[paidbyName];
+    debt = groupUserObj ? groupUserObj - perPersonAmount : 0 - perPersonAmount;
+
+    groupUsersUpdate[paidbyName] = debt;
+    updatedUserAmount = users[paidbyName].amount - perPersonAmount;
+
+    db.ref(`bill-splitter/users/${paidbyName}`).update({
+      amount: updatedUserAmount,
+      settled: false,
+    });
   }
 
+  db.ref(`bill-splitter/groups/${groupIndex}/users`).update(groupUsersUpdate);
   fetchData(groupIndex);
   $("#form--expense").modal("toggle");
 });

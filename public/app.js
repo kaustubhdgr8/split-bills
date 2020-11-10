@@ -83,6 +83,8 @@ function _renderView() {
     } else {
       document.getElementById("group-details__container").classList.add("hidden");
     }
+  } else {
+    _renderDashboard();
   }
 }
 
@@ -112,6 +114,8 @@ function _renderUsers() {
   } else {
     document.getElementById("users").innerHTML = "<div class=\"alert alert-warning\" role=\"alert\">No friends yet! Add friends now and split your bills easily.</div>";
   }
+
+  _renderDuesAlert();
 }
 
 function _renderGroups() {
@@ -130,6 +134,55 @@ function _renderGroups() {
   } else {
     document.getElementById("groups").innerHTML = "<div class=\"alert alert-warning\" role=\"alert\">No groups found! Add a group now and record your expenses.</div>";
   }
+
+  _renderDuesAlert();
+}
+
+function _renderDashboard() {
+  var title = document.getElementById("dashboard__title");
+  var usersContainer = document.getElementById("dashboard__list--users");
+  var groupsContainer = document.getElementById("dashboard__list--groups");
+
+  var amount = _calculateTotal();
+
+  var usersList = "<ul class=\"list-group list-group-flush\">";
+  var groupsList = "<ul class=\"list-group list-group-flush\">";
+
+  if (amount < 0) {
+    title.innerHTML = "You owe your friend(s) <span class=\"display-4\">$".concat(Math.abs(amount.toFixed(2)), "!</span>");
+    title.classList.add("text-danger");
+  } else if (amount > 0) {
+    title.innerHTML = "Your friend(s) owe you <span class=\"display-4\">$".concat(amount.toFixed(2), "!</span>");
+    title.classList.add("text-success");
+  } else {
+    title.innerHTML = "Everything is settled up!";
+  }
+
+  for (var _i3 = 0, _Object$entries3 = Object.entries(users); _i3 < _Object$entries3.length; _i3++) {
+    var _Object$entries3$_i = _slicedToArray(_Object$entries3[_i3], 2),
+        index = _Object$entries3$_i[0],
+        user = _Object$entries3$_i[1];
+
+    if (!user.settled) {
+      usersList += "\n        <li class=\"list-group-item d-flex justify-content-between\">\n          <span>".concat(user.name, "</span>\n          <span class=\"").concat(user.amount < 0 ? "text-danger" : "text-success", "\">$").concat(Math.abs(user.amount.toFixed(2)), "</span>\n        </li>\n      ");
+    }
+  }
+
+  usersList += "<ul>";
+
+  for (var _i4 = 0, _Object$entries4 = Object.entries(groups); _i4 < _Object$entries4.length; _i4++) {
+    var _Object$entries4$_i = _slicedToArray(_Object$entries4[_i4], 2),
+        _index = _Object$entries4$_i[0],
+        group = _Object$entries4$_i[1];
+
+    if (!group.settled) {
+      groupsList += "<li class=\"list-group-item\"><a href=\"/groups.html\">".concat(group.name, "</a></li>");
+    }
+  }
+
+  groupsList += "<ul>";
+  usersContainer.innerHTML = usersList;
+  groupsContainer.innerHTML = groupsList;
 }
 
 function _randomNumber(gender) {
@@ -156,16 +209,51 @@ function _totalExpense(groupIndex) {
   var total = 0;
 
   if (groups[groupIndex].activity) {
-    for (var _i3 = 0, _Object$entries3 = Object.entries(groups[groupIndex].activity); _i3 < _Object$entries3.length; _i3++) {
-      var _Object$entries3$_i = _slicedToArray(_Object$entries3[_i3], 2),
-          index = _Object$entries3$_i[0],
-          activity = _Object$entries3$_i[1];
+    for (var _i5 = 0, _Object$entries5 = Object.entries(groups[groupIndex].activity); _i5 < _Object$entries5.length; _i5++) {
+      var _Object$entries5$_i = _slicedToArray(_Object$entries5[_i5], 2),
+          index = _Object$entries5$_i[0],
+          activity = _Object$entries5$_i[1];
 
       total += parseFloat(activity.amount);
     }
   }
 
   return total;
+}
+
+function _calculateTotal() {
+  var amount = 0;
+
+  if (users.length !== 0) {
+    for (var _i6 = 0, _Object$entries6 = Object.entries(users); _i6 < _Object$entries6.length; _i6++) {
+      var _Object$entries6$_i = _slicedToArray(_Object$entries6[_i6], 2),
+          index = _Object$entries6$_i[0],
+          user = _Object$entries6$_i[1];
+
+      if (!user.settled) {
+        amount += user.amount;
+      }
+    }
+  }
+
+  return amount;
+}
+
+function _renderDuesAlert() {
+  var container = document.getElementById("totalDuesAlert");
+
+  var amount = _calculateTotal();
+
+  if (amount < 0) {
+    container.innerHTML = "You have to pay <span class=\"h5\">$".concat(Math.abs(amount.toFixed(2)), "</span>. This amount is the total of all the dues for all the pending (non-settled) groups.");
+    container.classList.add("alert-danger");
+  } else if (amount > 0) {
+    container.innerHTML = "You are owed <span class=\"h5\">$".concat(amount.toFixed(2), "</span>. This amount is the total of all the dues for all the pending (non-settled) groups.");
+    container.classList.add("alert-success");
+  } else {
+    container.innerHTML = "Everything is settled up!";
+    container.classList.add("alert-secondary");
+  }
 }
 
 function renderUserDetails(userIndex) {
@@ -189,23 +277,20 @@ function renderUserDetails(userIndex) {
   }
 
   details += "<p class=\"card-text\">\n      <small class=\"text-muted\">Last updated on ".concat(user.date, "</small>\n    </p>");
-  var groupUsers;
 
-  for (var _i4 = 0, _Object$keys = Object.keys(groups); _i4 < _Object$keys.length; _i4++) {
-    var _Object$keys$_i = _slicedToArray(_Object$keys[_i4], 2),
-        index = _Object$keys$_i[0],
-        group = _Object$keys$_i[1];
+  for (var _i7 = 0, _Object$entries7 = Object.entries(groups); _i7 < _Object$entries7.length; _i7++) {
+    var _Object$entries7$_i = _slicedToArray(_Object$entries7[_i7], 2),
+        index = _Object$entries7$_i[0],
+        group = _Object$entries7$_i[1];
 
-    groupUsers = group.users;
+    if (group.users) {
+      for (var _i8 = 0, _Object$entries8 = Object.entries(group.users); _i8 < _Object$entries8.length; _i8++) {
+        var _Object$entries8$_i = _slicedToArray(_Object$entries8[_i8], 2),
+            gUserIndex = _Object$entries8$_i[0],
+            groupUser = _Object$entries8$_i[1];
 
-    if (groupUsers) {
-      for (var _i5 = 0, _Object$keys2 = Object.keys(groupUsers); _i5 < _Object$keys2.length; _i5++) {
-        var _Object$keys2$_i = _slicedToArray(_Object$keys2[_i5], 2),
-            _index = _Object$keys2$_i[0],
-            groupUser = _Object$keys2$_i[1];
-
-        if (_index === userIndex) {
-          memberGroups += "<li class=\"list-group-item\">\n              ".concat(group.name, "\n              <small class=\"text-muted\">(").concat(group.settled ? "settled up" : "pending", ")</small>\n            </li>;");
+        if (gUserIndex === userIndex) {
+          memberGroups += "<li class=\"list-group-item\">\n              <a href=\"/groups.html\">\n                ".concat(group.name, "\n              </a>\n              <small class=\"text-muted\">(").concat(group.settled ? "settled up" : "pending", ")</small>\n            </li>");
           break;
         }
       }
@@ -295,11 +380,11 @@ function settleDues(userIndex) {
 function renderGroupDetails(groupIndex) {
   var group = groups[groupIndex];
   document.getElementById("group-header").innerHTML = "<div class=\"d-flex flex-nowrap justify-content-between align-items-center\">\n      <h3 class=\"card-title mb-0\">\n        ".concat(group.name, "\n        <small class=\"text-muted\" style=\"font-size: initial;\">(").concat(group.settled ? "settled up" : "pending", ")</small>\n      </h3>\n      <div class=\"btn-group btn-group-sm\" role=\"group\">\n        <a href=\"#\" class=\"btn btn-outline-primary ml-2\" data-toggle=\"modal\" data-target=\"#form--group\" onclick=\"editGroup('").concat(groupIndex, "')\">Edit</a>\n        <a href=\"#\" class=\"btn btn-outline-danger\" onclick=\"removeGroup('").concat(groupIndex, "')\">Delete</a>\n      </div>\n    </div>\n    <p class=\"card-text\">\n      <small class=\"text-muted\">Last updated on ").concat(group.date, "</small>\n    </p>");
-  document.getElementById("group-details--tabs").innerHTML = "<ul class=\"nav nav-tabs\">\n      <li class=\"nav-item\">\n        <a class=\"nav-link active\" href=\"#\" id=\"tab--friend\" onclick=\"activateTab(this, '".concat(groupIndex, "')\">\n          Friends\n          <span class=\"badge badge-").concat(group.settled ? "secondary" : "primary", "\">\n            ").concat(group.users ? Object.keys(group.users).length : 0, "\n          </span>\n        </a>\n      </li>\n      <li class=\"nav-item\">\n        <a class=\"nav-link\" href=\"#\" id=\"tab--activity\" onclick=\"activateTab(this, '").concat(groupIndex, "')\">\n          Activity\n          <span class=\"badge badge-").concat(group.settled ? "secondary" : "primary", "\">\n            ").concat(group.activity ? Object.keys(group.activity).length : 0, "\n          </span>\n        </a>\n      </li>\n      <li class=\"nav-item\">\n        <a class=\"nav-link\" href=\"#\" id=\"tab--chart\" onclick=\"activateTab(this, '").concat(groupIndex, "')\">Chart</a>\n      </li>\n    </ul>");
+  document.getElementById("group-details--tabs").innerHTML = "<ul class=\"nav nav-tabs\">\n      <li class=\"nav-item\">\n        <a class=\"nav-link active\" href=\"#\" id=\"tab--friend\" onclick=\"activateTab(this, '".concat(groupIndex, "')\">\n          Friends\n          <span class=\"badge badge-").concat(group.settled ? "secondary" : "primary", "\">\n            ").concat(group.users ? Object.keys(group.users).length : 0, "\n          </span>\n        </a>\n      </li>\n      <li class=\"nav-item\">\n        <a class=\"nav-link\" href=\"#\" id=\"tab--activity\" onclick=\"activateTab(this, '").concat(groupIndex, "')\">\n          Activity\n          <span class=\"badge badge-").concat(group.settled ? "secondary" : "primary", "\">\n            ").concat(group.activity ? Object.keys(group.activity).length : 0, "\n          </span>\n        </a>\n      </li>\n      <!-- <li class=\"nav-item\">\n        <a class=\"nav-link\" href=\"#\" id=\"tab--chart\" onclick=\"activateTab(this, '").concat(groupIndex, "')\">Chart</a>\n      </li> -->\n    </ul>");
   document.getElementById("group-details").innerHTML = "";
   var ctaButtons = "";
 
-  if (!group.settled) {
+  if (group.users) {
     ctaButtons += "<button class=\"btn btn-primary btn-sm mr-2\" data-toggle=\"modal\" data-target=\"#form--expense\" onclick=\"addExpense('".concat(groupIndex, "')\">Record expense</button>");
   }
 
@@ -373,10 +458,10 @@ function addGroupUser(groupIndex) {
     return o.remove();
   });
 
-  for (var _i6 = 0, _Object$entries4 = Object.entries(users); _i6 < _Object$entries4.length; _i6++) {
-    var _Object$entries4$_i = _slicedToArray(_Object$entries4[_i6], 2),
-        index = _Object$entries4$_i[0],
-        user = _Object$entries4$_i[1];
+  for (var _i9 = 0, _Object$entries9 = Object.entries(users); _i9 < _Object$entries9.length; _i9++) {
+    var _Object$entries9$_i = _slicedToArray(_Object$entries9[_i9], 2),
+        index = _Object$entries9$_i[0],
+        user = _Object$entries9$_i[1];
 
     multiselect.options[multiselect.options.length] = new Option(user.name, index, false);
   }
@@ -395,7 +480,6 @@ function activateTab(el, groupIndex) {
   if (!el.classList.contains("active")) {
     document.getElementById("tab--friend").classList.remove("active");
     document.getElementById("tab--activity").classList.remove("active");
-    document.getElementById("tab--chart").classList.remove("active");
     document.getElementById("group-details").innerHTML = "";
     el.classList.add("active");
     var clickedTab = el.getAttribute("id");
@@ -404,9 +488,7 @@ function activateTab(el, groupIndex) {
       _renderGroupUsers(groupIndex);
     } else if (clickedTab === "tab--activity") {
       _renderGroupActivity(groupIndex);
-    } else {
-      _renderGroupChart(groupIndex);
-    }
+    } else {}
   }
 }
 
@@ -417,10 +499,10 @@ function _renderGroupUsers(groupIndex) {
   if (groupRef.users && Object.keys(groupRef.users).length !== 0) {
     var userRef;
 
-    for (var _i7 = 0, _Object$entries5 = Object.entries(groupRef.users); _i7 < _Object$entries5.length; _i7++) {
-      var _Object$entries5$_i = _slicedToArray(_Object$entries5[_i7], 2),
-          index = _Object$entries5$_i[0],
-          amount = _Object$entries5$_i[1];
+    for (var _i10 = 0, _Object$entries10 = Object.entries(groupRef.users); _i10 < _Object$entries10.length; _i10++) {
+      var _Object$entries10$_i = _slicedToArray(_Object$entries10[_i10], 2),
+          index = _Object$entries10$_i[0],
+          amount = _Object$entries10$_i[1];
 
       userRef = users[index];
       list += "<li class=\"list-group-item\">\n          <div class=\"d-flex justify-content-between align-items-center\">\n            <span class=\"d-flex justify-content-start align-items-center\">  \n              <img src=\"assets/images/".concat(userRef.avatar, ".jpg\" alt=\"").concat(userRef.avatar, "\" class=\"custom__group-user-list--image\" />\n              <span class=\"ml-1\">").concat(userRef.name, "</span>\n            </span>\n            <div style=\"text-align: right;\">");
@@ -458,20 +540,31 @@ function _renderGroupActivity(groupIndex) {
     container.innerHTML = "<div class=\"alert alert-warning mt-3\" role=\"alert\">No bills added yet! Record your expenses now and split your bills easily.</div>";
   } else {
     var content = "<ul class=\"list-group list-group-flush mt-2\">";
+    var paidByYou, debtAmount;
 
-    for (var _i8 = 0, _Object$entries6 = Object.entries(activities); _i8 < _Object$entries6.length; _i8++) {
-      var _Object$entries6$_i = _slicedToArray(_Object$entries6[_i8], 2),
-          index = _Object$entries6$_i[0],
-          activity = _Object$entries6$_i[1];
+    for (var _i11 = 0, _Object$entries11 = Object.entries(activities); _i11 < _Object$entries11.length; _i11++) {
+      var _Object$entries11$_i = _slicedToArray(_Object$entries11[_i11], 2),
+          index = _Object$entries11$_i[0],
+          activity = _Object$entries11$_i[1];
 
-      content += "<li class=\"list-group-item\">\n          <div class=\"d-flex justify-content-between align-items-center mb-2\"> \n            <div class=\"d-flex justify-content-start align-items-baseline\">\n              <img \n                src=\"assets/icons/".concat(activity.category, ".svg\"\n                alt=\"").concat(activity.category, " icon\"\n                class=\"custom__group-category--image\">\n              <span class=\"ml-2 h5\">\n                ").concat(activity.description, "\n                <small class=\"text-muted\">(").concat(categories[activity.category], ")</small>\n              </span>\n            </div>\n            <div class=\"h5\" style=\"text-align: right;\">$").concat(activity.amount, "</div>\n          </div>\n          <div class=\"d-flex justify-content-between align-items-start\">\n            <span class=\"d-flex flex-column align-items-start\">\n              <span>Total: $").concat(activity.amount, "</span>\n              <small class=\"text-muted\">\n                (Paid by ").concat(activity.paidby === "0" ? "You" : users[activity.paidby].name, ")</small>\n            </span>\n            <span class=\"d-flex flex-column align-items-end\">");
+      paidByYou = activity.paidby === "0";
 
-      for (var _i9 = 0, _Object$entries7 = Object.entries(activity.split); _i9 < _Object$entries7.length; _i9++) {
-        var _Object$entries7$_i = _slicedToArray(_Object$entries7[_i9], 2),
-            userIndex = _Object$entries7$_i[0],
-            user = _Object$entries7$_i[1];
+      if (paidByYou) {
+        debtAmount = parseFloat(activity.amount) - parseFloat(activity.amount) / Object.keys(activity.split).length;
+      } else {
+        debtAmount = parseFloat(activity.amount) / Object.keys(activity.split).length;
+      }
 
-        content += "<small>".concat(users[userIndex].name, "</small>");
+      content += "<li class=\"list-group-item\">\n          <div class=\"d-flex justify-content-between align-items-center mb-2\"> \n            <div class=\"d-flex justify-content-start align-items-baseline\">\n              <img \n                src=\"assets/icons/".concat(activity.category, ".svg\"\n                alt=\"").concat(activity.category, " icon\"\n                class=\"custom__group-category--image\">\n              <span class=\"ml-2 h5\">\n                ").concat(activity.description, "\n                <small class=\"text-muted\">(").concat(categories[activity.category], ")</small>\n              </span>\n            </div>\n            <div class=\"h5 text-").concat(paidByYou ? "success" : "danger", "\" style=\"text-align: right;\">\n              <small style=\"font-size: small;\">").concat(paidByYou ? "you lent" : "you borrowed", "</small>\n              $").concat(debtAmount.toFixed(2), "\n            </div>\n          </div>\n          <div class=\"d-flex justify-content-between align-items-start\">\n            <span class=\"d-flex flex-column align-items-start\">\n              <span>Total: $").concat(activity.amount, "</span>\n              <small class=\"text-muted\">\n                (Paid by ").concat(paidByYou ? "You" : users[activity.paidby].name, ")</small>\n            </span>\n            <span class=\"d-flex flex-column align-items-end\">");
+
+      for (var _i12 = 0, _Object$entries12 = Object.entries(activity.split); _i12 < _Object$entries12.length; _i12++) {
+        var _Object$entries12$_i = _slicedToArray(_Object$entries12[_i12], 2),
+            userIndex = _Object$entries12$_i[0],
+            user = _Object$entries12$_i[1];
+
+        if (userIndex !== "0") {
+          content += "<small>".concat(users[userIndex].name, "</small>");
+        }
       }
 
       content += "</span>\n          </div>\n        </li>";
@@ -505,37 +598,37 @@ function addExpense() {
     listGroup = "<option value=\"".concat(groupIndex, "\" selected>").concat(groups[groupIndex].name, "</option>");
     containerGroup.setAttribute("disabled", "disabled");
 
-    for (var _i10 = 0, _Object$entries8 = Object.entries(groups[groupIndex].users); _i10 < _Object$entries8.length; _i10++) {
-      var _Object$entries8$_i = _slicedToArray(_Object$entries8[_i10], 2),
-          index = _Object$entries8$_i[0],
-          user = _Object$entries8$_i[1];
+    for (var _i13 = 0, _Object$entries13 = Object.entries(groups[groupIndex].users); _i13 < _Object$entries13.length; _i13++) {
+      var _Object$entries13$_i = _slicedToArray(_Object$entries13[_i13], 2),
+          index = _Object$entries13$_i[0],
+          user = _Object$entries13$_i[1];
 
       listUsers += "<option value=\"".concat(index, "\">").concat(users[index].name, "</option>");
       checkUsers += "<div class=\"form-check\">\n        <input\n          class=\"form-check-input\"\n          type=\"checkbox\"\n          name=\"expense-users\"\n          id=\"".concat(index, "\"\n          value=\"").concat(index, "\"\n        />\n        <label class=\"form-check-label\" for=\"").concat(index, "\">").concat(users[index].name, "</label>\n      </div>");
     }
   } else {
-    for (var _i11 = 0, _Object$entries9 = Object.entries(groups); _i11 < _Object$entries9.length; _i11++) {
-      var _Object$entries9$_i = _slicedToArray(_Object$entries9[_i11], 2),
-          _index2 = _Object$entries9$_i[0],
-          group = _Object$entries9$_i[1];
+    for (var _i14 = 0, _Object$entries14 = Object.entries(groups); _i14 < _Object$entries14.length; _i14++) {
+      var _Object$entries14$_i = _slicedToArray(_Object$entries14[_i14], 2),
+          _index2 = _Object$entries14$_i[0],
+          group = _Object$entries14$_i[1];
 
       listGroup += "<option value=\"".concat(_index2, "\">").concat(group.name, "</option>");
     }
 
-    for (var _i12 = 0, _Object$entries10 = Object.entries(users); _i12 < _Object$entries10.length; _i12++) {
-      var _Object$entries10$_i = _slicedToArray(_Object$entries10[_i12], 2),
-          _index3 = _Object$entries10$_i[0],
-          _user = _Object$entries10$_i[1];
+    for (var _i15 = 0, _Object$entries15 = Object.entries(users); _i15 < _Object$entries15.length; _i15++) {
+      var _Object$entries15$_i = _slicedToArray(_Object$entries15[_i15], 2),
+          _index3 = _Object$entries15$_i[0],
+          _user = _Object$entries15$_i[1];
 
       listUsers += "<option value=\"".concat(_index3, "\">").concat(_user.name, "</option>");
       checkUsers += "<div class=\"form-check\">\n        <input\n          class=\"form-check-input\"\n          type=\"checkbox\"\n          name=\"expense-users\"\n          id=\"".concat(_index3, "\"\n          value=\"").concat(_index3, "\"\n        />\n        <label class=\"form-check-label\" for=\"").concat(_index3, "\">").concat(_user.name, "</label>\n      </div>");
     }
   }
 
-  for (var _i13 = 0, _Object$entries11 = Object.entries(categories); _i13 < _Object$entries11.length; _i13++) {
-    var _Object$entries11$_i = _slicedToArray(_Object$entries11[_i13], 2),
-        _index4 = _Object$entries11$_i[0],
-        category = _Object$entries11$_i[1];
+  for (var _i16 = 0, _Object$entries16 = Object.entries(categories); _i16 < _Object$entries16.length; _i16++) {
+    var _Object$entries16$_i = _slicedToArray(_Object$entries16[_i16], 2),
+        _index4 = _Object$entries16$_i[0],
+        category = _Object$entries16$_i[1];
 
     listCategory += "<option value=\"".concat(_index4, "\">").concat(category, "</option>");
   }
@@ -667,10 +760,10 @@ document.getElementById("group-form").addEventListener("submit", function (e) {
       name: groupName,
       type: groupType,
       date: _todayDate(),
-      settled: false
+      settled: true
     };
     db.ref().update(newGroup);
-    fetchData();
+    fetchData(key);
   }
 
   $("#form--group").modal("toggle");
@@ -682,6 +775,7 @@ document.getElementById("member-form").addEventListener("submit", function (e) {
   var userOptions = multiselect && multiselect.options;
   var selectedUsers = [];
   var groupMembers = {};
+  var userGroupObj;
 
   for (var i = 0; i < userOptions.length; i++) {
     if (userOptions[i].selected) {
@@ -690,9 +784,17 @@ document.getElementById("member-form").addEventListener("submit", function (e) {
   }
 
   selectedUsers.forEach(function (user) {
-    if (!groups[groupIndex].users[user]) {
+    userGroupObj = {};
+
+    if (!groups[groupIndex].users || !groups[groupIndex].users[user]) {
       groupMembers[user] = 0;
     }
+
+    userGroupObj[groupIndex] = true;
+    db.ref("bill-splitter/users/".concat(user, "/groups")).update(userGroupObj);
+    db.ref("bill-splitter/users/".concat(user)).update({
+      date: _todayDate()
+    });
   });
   db.ref("bill-splitter/groups/".concat(groupIndex, "/users")).update(groupMembers);
   db.ref("bill-splitter/groups/".concat(groupIndex)).update({
@@ -709,7 +811,7 @@ document.getElementById("expense-form").addEventListener("submit", function (e) 
   var amount = DOMPurify.sanitize(document.getElementById("expense-amount").value, INPUT_ALLOWED_TAGS);
   var paidbyName = DOMPurify.sanitize(document.getElementById("expense-paidby").value, INPUT_ALLOWED_TAGS);
   var selectedUsers = {};
-  var userCheck = [];
+  var perPersonAmount;
 
   var _iterator7 = _createForOfIteratorHelper(document.getElementsByName("expense-users")),
       _step7;
@@ -720,7 +822,6 @@ document.getElementById("expense-form").addEventListener("submit", function (e) 
 
       if (checkbox.checked) {
         selectedUsers[checkbox.value] = true;
-        userCheck.push(checkbox.value);
       }
     }
   } catch (err) {
@@ -729,11 +830,13 @@ document.getElementById("expense-form").addEventListener("submit", function (e) 
     _iterator7.f();
   }
 
-  if (paidbyName != "0") {
-    selectedUsers[paidbyName] = 0;
-    userCheck.push(paidbyName);
+  selectedUsers[paidbyName] = true;
+
+  if (paidbyName !== "0") {
+    selectedUsers["0"] = true;
   }
 
+  perPersonAmount = parseFloat(amount) / Object.keys(selectedUsers).length;
   var key = db.ref().child("bill-splitter").push().key;
   var newActivity = {};
   newActivity["bill-splitter/groups/".concat(groupIndex, "/activity/").concat(key)] = {
@@ -749,17 +852,38 @@ document.getElementById("expense-form").addEventListener("submit", function (e) 
     date: _todayDate(),
     settled: false
   });
-  var nonExistantUsers = {};
-  userCheck.forEach(function (userIndex) {
-    if (!groups[groupIndex].users[userIndex]) {
-      nonExistantUsers[userIndex] = 0;
-    }
-  });
+  var groupUsersUpdate = {};
+  var debt, updatedUserAmount, groupUserObj;
 
-  if (Object.keys(nonExistantUsers).length !== 0) {
-    db.ref("bill-splitter/groups/".concat(groupIndex, "/users")).update(nonExistantUsers);
+  if (paidbyName === "0") {
+    for (var _i17 = 0, _Object$entries17 = Object.entries(selectedUsers); _i17 < _Object$entries17.length; _i17++) {
+      var _Object$entries17$_i = _slicedToArray(_Object$entries17[_i17], 2),
+          userIndex = _Object$entries17$_i[0],
+          selectedUser = _Object$entries17$_i[1];
+
+      if (userIndex !== "0") {
+        groupUserObj = groups[groupIndex].users[userIndex];
+        debt = groupUserObj ? groupUserObj + perPersonAmount : perPersonAmount;
+        groupUsersUpdate[userIndex] = debt;
+        updatedUserAmount = users[userIndex].amount + debt;
+        db.ref("bill-splitter/users/".concat(userIndex)).update({
+          amount: updatedUserAmount,
+          settled: false
+        });
+      }
+    }
+  } else {
+    groupUserObj = groups[groupIndex].users[paidbyName];
+    debt = groupUserObj ? groupUserObj - perPersonAmount : 0 - perPersonAmount;
+    groupUsersUpdate[paidbyName] = debt;
+    updatedUserAmount = users[paidbyName].amount - perPersonAmount;
+    db.ref("bill-splitter/users/".concat(paidbyName)).update({
+      amount: updatedUserAmount,
+      settled: false
+    });
   }
 
+  db.ref("bill-splitter/groups/".concat(groupIndex, "/users")).update(groupUsersUpdate);
   fetchData(groupIndex);
   $("#form--expense").modal("toggle");
 });
