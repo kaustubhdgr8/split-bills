@@ -46,6 +46,14 @@ module.exports = function (grunt) {
         dest: "public/",
       },
     },
+    clean: {
+      public: {
+        src: ["public/**/*"]
+      },
+      final: {
+        src: ["src/templates/final/*.html"]
+      }
+    },
     jshint: {
       all: ["Gruntfile.js", "src/**/*.js"],
       options: {
@@ -72,9 +80,10 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks("grunt-bake");
   grunt.loadNpmTasks("grunt-contrib-concat");
   grunt.loadNpmTasks("grunt-contrib-copy");
+  grunt.loadNpmTasks("grunt-contrib-clean");
   grunt.loadNpmTasks("grunt-contrib-jshint");
   grunt.loadNpmTasks("grunt-contrib-watch");
 
   grunt.registerTask("default", ["compile", "watch"]);
-  grunt.registerTask("compile", ["jshint", "concat", "babel", "bake", "copy"]);
+  grunt.registerTask("compile", ["jshint", "concat", "babel", "bake", "clean:public", "copy", "clean:final"]);
 };
