@@ -1,43 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
   <!--(bake partials/head.html)-->
-  <title>Bill splitter | Groups</title>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <meta name="keywords" content="">
+    <meta name="description" content="Bill splitter groups">
+    <title>Bill splitter | Groups</title>
+  </head>
   <body>
     <!--(bake partials/navbar.html)-->
     <!--(bake partials/modals.html)-->
     <main class="container pt-md-5 pb-5">
       <h1 class="display-4">Groups</h1>
-      <hr class="mb-5" />
+      <hr class="mb-5">
       <div class="row">
         <section class="col-md-12 mb-3">
           <div class="alert" role="alert" id="totalDuesAlert"></div>
         </section>
         <section class="col-md-6 mb-4">
-          <ul class="list-group" id="groups">
-            <div class="mb-5" style="text-align: center">
+          <div class="list-group" id="groups">
+            <div class="mb-5 text-center">
               <div class="spinner-border" role="status"></div>
               <div>Loading ...</div>
             </div>
-          </ul>
+          </div>
           <div class="mt-4 custom__cta-group">
-            <button
-              type="button"
-              class="btn btn-primary mr-2"
-              data-toggle="modal"
-              data-target="#form--expense"
-              onclick="addExpense()"
-            >
-              + Add an expense
-            </button>
-            <button
-              type="button"
-              class="btn btn-outline-primary"
-              data-toggle="modal"
-              data-target="#form--group"
-              onclick="addGroup()"
-            >
-              + Add new group
-            </button>
+            <button type="button"
+                    class="btn btn-primary mr-2"
+                    data-toggle="modal"
+                    data-target="#form--expense"
+                    onclick="addExpense()">+ Add an expense</button>
+            <button type="button"
+                    class="btn btn-outline-primary"
+                    data-toggle="modal"
+                    data-target="#form--group"
+                    onclick="addGroup()">+ Add new group</button>
           </div>
         </section>
         <section class="col-md-6 container__action">
@@ -47,10 +45,7 @@
               <div id="group-details--tabs"></div>
               <div id="group-details"></div>
             </div>
-            <div
-              class="card-body custom__cta-group--details"
-              id="group-details__cta"
-            ></div>
+            <div class="card-body custom__cta-group--details" id="group-details__cta"></div>
           </div>
         </section>
       </div>

@@ -1,7 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
   <!--(bake partials/head.html)-->
-  <title>Bill splitter | Split your bills easily</title>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <meta name="keywords" content="">
+    <meta name="description" content="Bill splitter homepage">
+    <title>Bill splitter | Split your bills easily</title>
+  </head>
   <body>
     <!--(bake partials/navbar.html)-->
     <!--(bake partials/modals.html)-->
@@ -11,7 +17,7 @@
       <hr class="mb-5" />
       <section class="jumbotron">
         <h2 class="h2" id="dashboard__title">
-          <div class="mb-3" style="text-align: center">
+          <div class="mb-3 text-center">
             <div class="spinner-border h6" role="status"></div>
             <div class="h6">Loading ...</div>
           </div>
@@ -21,18 +27,14 @@
           This amount is the total of all the dues for all the pending
           (non-settled) groups.
         </p>
-        <a class="btn btn-primary mr-2" href="/users.html" role="button"
-          >Settle now</a
-        >
-        <a class="btn btn-outline-primary" href="/groups.html" role="button"
-          >View details</a
-        >
+        <a class="btn btn-primary mr-2" href="/users.html" role="button">Settle now</a>
+        <a class="btn btn-outline-primary" href="/groups.html" role="button">View details</a>
       </section>
       <section class="row">
         <div class="col-md-6">
           <h4 class="h4">Dues with friends</h4>
           <div id="dashboard__list--users">
-            <div class="mb-3" style="text-align: center">
+            <div class="mb-3 text-center">
               <div class="spinner-border h6" role="status"></div>
               <div class="h6">Loading ...</div>
             </div>
@@ -41,7 +43,7 @@
         <div class="col-md-6">
           <h4 class="h4">Non-settled groups</h4>
           <div id="dashboard__list--groups">
-            <div class="mb-3" style="text-align: center">
+            <div class="mb-3 text-center">
               <div class="spinner-border h6" role="status"></div>
               <div class="h6">Loading ...</div>
             </div>

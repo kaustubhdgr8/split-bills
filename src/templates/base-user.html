@@ -1,7 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
   <!--(bake partials/head.html)-->
-  <title>Bill splitter | My friends</title>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <meta name="keywords" content="">
+    <meta name="description" content="Bill splitter friends list">
+    <title>Bill splitter | My friends</title>
+  </head>
   <body>
     <!--(bake partials/navbar.html)-->
     <!--(bake partials/modals.html)-->
@@ -13,31 +19,23 @@
           <div class="alert" role="alert" id="totalDuesAlert"></div>
         </section>
         <section class="col-md-6 mb-4">
-          <ul class="list-group" id="users">
-            <div class="mb-5" style="text-align: center">
+          <div class="list-group" id="users">
+            <div class="mb-5 text-center">
               <div class="spinner-border" role="status"></div>
               <div>Loading ...</div>
             </div>
-          </ul>
+          </div>
           <div class="mt-4 custom__cta-group">
-            <button
-              type="button"
-              class="btn btn-primary mr-2"
-              data-toggle="modal"
-              data-target="#form--expense"
-              onclick="addExpense()"
-            >
-              + Add an expense
-            </button>
-            <button
-              type="button"
-              class="btn btn-outline-primary"
-              data-toggle="modal"
-              data-target="#form--user"
-              onclick="addUser()"
-            >
-              + Add a friend
-            </button>
+            <button type="button"
+                    class="btn btn-primary mr-2"
+                    data-toggle="modal"
+                    data-target="#form--expense"
+                    onclick="addExpense()">+ Add an expense</button>
+            <button type="button"
+                    class="btn btn-outline-primary"
+                    data-toggle="modal"
+                    data-target="#form--user"
+                    onclick="addUser()">+ Add a friend</button>
           </div>
         </section>
         <section class="col-md-6 container__action">
@@ -48,18 +46,13 @@
                 <div class="card-body" id="user-details"></div>
                 <div class="card-body">
                   <h5 class="h5">Groups</h5>
-                  <ul
-                    class="list-group list-group-flush"
-                    id="user-details__groups"
-                  ></ul>
+                  <ul class="list-group list-group-flush" id="user-details__groups">
+                  </ul>
                 </div>
               </div>
               <div class="col-xl-4"></div>
               <div class="col-xl-8">
-                <div
-                  class="card-body custom__cta-group--details"
-                  id="user-details__cta"
-                ></div>
+                <div class="card-body custom__cta-group--details" id="user-details__cta"></div>
               </div>
             </div>
           </div>
