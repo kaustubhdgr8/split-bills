@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="icon" type="image/png" href="assets/images/favicon.png" />
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+          integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2"
+          crossorigin="anonymous" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  
+  <title>Bill splitter | Split your bills easily</title>
+  <body>
+    <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light custom__navbar">
+      <div class="container">
+        <a class="navbar-brand" href="/">
+          <img src="assets/images/bill-splitter.png"
+               alt="Bill splitter"
+               loading="lazy"
+               height="24"
+               width="24" />
+        </a>
+        <button class="navbar-toggler"
+                type="button"
+                data-toggle="collapse"
+                data-target="#navbarNav"
+                aria-controls="navbarNav"
+                aria-expanded="false"
+                aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item custom__navbar--item">
+              <a class="nav-link" href="/">Home</a>
+            </li>
+            <li class="nav-item custom__navbar--item">
+              <a class="nav-link" href="/users.html">Friends</a>
+            </li>
+            <li class="nav-item custom__navbar--item">
+              <a class="nav-link" href="/groups.html">Groups</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    
+    <!-- User form -->
+    <div class="modal fade"
+         id="form--user"
+         data-backdrop="static"
+         data-keyboard="false"
+         tabindex="-1"
+         aria-hidden="true">
+      <div class="modal-lg modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="user-form__title">Add a friend</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form id="user-form" data-user="" method="POST">
+              <div class="form-group row">
+                <label for="username" class="col-sm-3 col-form-label">Name</label>
+                <div class="col-sm-9">
+                  <input type="text"
+                         class="form-control"
+                         name="username"
+                         id="username"
+                         required />
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="number" class="col-sm-3 col-form-label">Phone number</label>
+                <div class="col-sm-9">
+                  <input type="tel"
+                         class="form-control"
+                         name="number"
+                         id="number"
+                         aria-describedby="number-help" />
+                  <small id="number-help" class="form-text text-muted">(Optional) Useful for reminding your friend.</small>
+                </div>
+              </div>
+              <fieldset class="form-group">
+                <div class="row">
+                  <legend class="col-form-label col-sm-3 pt-0">Gender</legend>
+                  <div class="col-sm-9">
+                    <div class="form-check">
+                      <input class="form-check-input"
+                             type="radio"
+                             name="gender"
+                             id="gender--m"
+                             value="m"
+                             aria-describedby="gender-help"
+                             required />
+                      <label class="form-check-label" for="gender--m">Male</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input"
+                             type="radio"
+                             name="gender"
+                             id="gender--f"
+                             value="f"
+                             aria-describedby="gender-help"
+                             required />
+                      <label class="form-check-label" for="gender--f">Female</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input"
+                             type="radio"
+                             name="gender"
+                             id="gender--o"
+                             value="o"
+                             aria-describedby="gender-help"
+                             required />
+                      <label class="form-check-label" for="gender--o">Other</label>
+                    </div>
+                    <small id="gender-help" class="form-text text-muted">This information is used for assigning a random avatar.</small>
+                  </div>
+                </div>
+              </fieldset>
+              <div class="form-group row">
+                <div class="col-sm-3">Consent</div>
+                <div class="col-sm-9">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="consent" required />
+                    <label class="form-check-label" for="consent">
+                      Please do not submit any confidential or sensitive
+                      information. This data is publicly accessible.
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button"
+                    class="btn btn-outline-danger mr-2"
+                    data-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary" form="user-form">Submit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Group form -->
+    <div class="modal fade"
+         id="form--group"
+         data-backdrop="static"
+         data-keyboard="false"
+         tabindex="-1"
+         aria-hidden="true">
+      <div class="modal-lg modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="group-form__title">Create a new group</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form id="group-form" data-group="" method="POST">
+              <div class="form-group row">
+                <label for="groupname" class="col-sm-3 col-form-label">Name</label>
+                <div class="col-sm-9">
+                  <input type="text"
+                         class="form-control"
+                         name="groupname"
+                         id="groupname"
+                         required />
+                </div>
+              </div>
+              <fieldset class="form-group">
+                <div class="row">
+                  <legend class="col-form-label col-sm-3 pt-0">Group type</legend>
+                  <div class="col-sm-9">
+                    <div class="form-check">
+                      <input class="form-check-input"
+                             type="radio"
+                             name="grouptype"
+                             id="grouptype--trip"
+                             value="trip"
+                             required />
+                      <label class="form-check-label" for="grouptype--trip">Trip</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input"
+                             type="radio"
+                             name="grouptype"
+                             id="grouptype--house"
+                             value="house"
+                             required />
+                      <label class="form-check-label" for="grouptype--house">House</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input"
+                             type="radio"
+                             name="grouptype"
+                             id="grouptype--other"
+                             value="other"
+                             required />
+                      <label class="form-check-label" for="grouptype--other">Other</label>
+                    </div>
+                  </div>
+                </div>
+              </fieldset>
+              <div class="form-group row">
+                <div class="col-sm-3">Consent</div>
+                <div class="col-sm-9">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="groupconsent" required />
+                    <label class="form-check-label" for="groupconsent">
+                      Please do not submit any confidential or sensitive
+                      information. This data is publicly accessible.
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button"
+                    class="btn btn-outline-danger mr-2"
+                    data-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary" form="group-form">Submit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Member form -->
+    <div class="modal fade"
+         id="form--member"
+         data-backdrop="static"
+         data-keyboard="false"
+         tabindex="-1"
+         aria-hidden="true">
+      <div class="modal-lg modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="member-form__title">Add a member</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form id="member-form" data-group="" method="POST">
+              <div class="form-group row">
+                <label for="user-multiselect" class="col-sm-3 col-form-label">Select one or more users</label>
+                <div class="col-sm-9">
+                  <select class="custom-select" id="user-multiselect" required multiple></select>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <a href="/users.html">Friends not in the list? Add them here</a>
+            <button type="button"
+                    class="btn btn-outline-danger mr-2"
+                    data-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary" form="member-form">Submit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Expense form -->
+    <div class="modal fade"
+         id="form--expense"
+         data-backdrop="static"
+         data-keyboard="false"
+         tabindex="-1"
+         aria-hidden="true">
+      <div class="modal-lg modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Add an expense</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form id="expense-form" data-group="" method="POST">
+              <div class="form-group row">
+                <label for="expense-group" class="col-sm-3 col-form-label">Group</label>
+                <div class="col-sm-9">
+                  <select class="form-control" id="expense-group" required></select>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="expense-category" class="col-sm-3 col-form-label">Category</label>
+                <div class="col-sm-9">
+                  <select class="form-control" id="expense-category" required></select>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="expense-name" class="col-sm-3 col-form-label">Description</label>
+                <div class="col-sm-9">
+                  <input type="text"
+                         class="form-control"
+                         name="expense-name"
+                         id="expense-name"
+                         required />
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="expense-amount" class="col-sm-3 col-form-label">Amount</label>
+                <div class="input-group col-sm-9">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">$</span>
+                  </div>
+                  <input type="number"
+                         class="form-control"
+                         id="expense-amount"
+                         name="expense-amount"
+                         step=".01"
+                         required />
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="expense-paidby" class="col-sm-3 col-form-label">Bill paid by</label>
+                <div class="col-sm-9">
+                  <select class="form-control" id="expense-paidby" required></select>
+                </div>
+              </div>
+              <div class="form-group row">
+                <div class="col-sm-3 mb-2">Split among 'You' and</div>
+                <div class="col-sm-9" id="expense-user-list"></div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button"
+                    class="btn btn-outline-danger mr-2"
+                    data-dismiss="modal">Cancel</button>
+            <button type="reset" class="btn btn-outline-primary" form="expense-form">Reset</button>
+            <button type="submit" class="btn btn-primary" form="expense-form">Submit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <main class="container pt-md-5 pb-5">
+      <h1 class="display-4">Bill splitter</h1>
+      <p class="lead">An intuitive way to split expenses among your friends</p>
+      <hr class="mb-5" />
+      <section class="jumbotron">
+        <h2 class="h2" id="dashboard__title">
+          <div class="mb-3" style="text-align: center">
+            <div class="spinner-border h6" role="status"></div>
+            <div class="h6">Loading ...</div>
+          </div>
+        </h2>
+        <hr class="mb-4" />
+        <p class="lead">
+          This amount is the total of all the dues for all the pending
+          (non-settled) groups.
+        </p>
+        <a class="btn btn-primary mr-2" href="/users.html" role="button"
+          >Settle now</a
+        >
+        <a class="btn btn-outline-primary" href="/groups.html" role="button"
+          >View details</a
+        >
+      </section>
+      <section class="row">
+        <div class="col-md-6">
+          <h4 class="h4">Dues with friends</h4>
+          <div id="dashboard__list--users">
+            <div class="mb-3" style="text-align: center">
+              <div class="spinner-border h6" role="status"></div>
+              <div class="h6">Loading ...</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <h4 class="h4">Non-settled groups</h4>
+          <div id="dashboard__list--groups">
+            <div class="mb-3" style="text-align: center">
+              <div class="spinner-border h6" role="status"></div>
+              <div class="h6">Loading ...</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="custom__footer pt-4">
+      <div class="container">
+        <p class="custom__footer--links">
+          <span>
+            <strong>&#169; Kaustubh Ghodke</strong>
+          </span>
+          <span>
+            <a href="https://github.com/kaustubhdgr8"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="ml-md-3">
+              <img src="assets/icons/github.svg"
+                   alt="GitHub"
+                   title="GitHub"
+                   style="height: 2.5vh" />
+            </a>
+            <a href="https://www.facebook.com/kaustubhdgr8"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="ml-3">
+              <img src="assets/icons/facebook.svg"
+                   alt="Facebook"
+                   title="Facebook"
+                   style="height: 2.5vh" />
+            </a>
+            <a href="https://www.linkedin.com/in/kaustubhghodke"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="ml-3">
+              <img src="assets/icons/linkedin.svg"
+                   alt="LinkedIn"
+                   title="LinkedIn"
+                   style="height: 2.5vh" />
+            </a>
+          </span>
+        </p>
+        <p>
+          <small>This site is developed with JavaScript, HTML, CSS, Bootstrap, Grunt and
+          Firebase.</small>
+        </p>
+        <br />
+        <p>
+          <small class="text-muted">
+            <a href="https://www.freepik.com/vectors/business"
+               target="_blank"
+               rel="noopener noreferrer"
+               style="color: black">Business vector created by macrovector - www.freepik.com</a>
+          </small>
+        </p>
+      </div>
+    </footer>
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.2.0/purify.min.js"
+            integrity="sha512-pCLEWaRgW+fJYJXoFb6sm5LHmXMW8sp6dFmdN/MjRO54Qc3vcPEjRfvMqgwOAzn+do/JDR75vgpWerWVrDvdRQ=="
+            crossorigin="anonymous"></script>
+    <script src="app.js"></script>
+    
+  </body>
+</html>
